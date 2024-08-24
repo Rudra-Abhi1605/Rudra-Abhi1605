@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="Play Tic-Tac-Toe online for free! Enjoy this classic game of Xs and Os with a clean interface. Challenge your friends or practice against the computer.">
+    <meta name="keywords" content="Tic-Tac-Toe, Tic Tac Toe, Xs and Os, classic games, free games, online games, play Tic-Tac-Toe, Tic-Tac-Toe game">
+    <meta name="author" content="Rudra Abhishek">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    
+    <!-- Open Graph for Social Media -->
+    <meta property="og:title" content="Play Tic-Tac-Toe Online | Free Classic Game">
+    <meta property="og:description" content="Enjoy the timeless game of Tic-Tac-Toe online. Challenge your friends or play against the computer. Free, fun, and easy to play!">
+    <meta property="og:image" content="https://yourwebsite.com/path/to/image.jpg"> <!-- Replace with your image URL -->
+    <meta property="og:url" content="https://yourwebsite.com/tic-tac-toe">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Play Tic-Tac-Toe Online | Free Classic Game">
+    <meta name="twitter:description" content="Play Tic-Tac-Toe online for free! Challenge your friends or play against the computer with a clean, simple interface.">
+    <meta name="twitter:image" content="https://yourwebsite.com/path/to/image.jpg"> <!-- Replace with your image URL -->
+    
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://yourwebsite.com/tic-tac-toe">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://www.flaticon.com/free-icon/tic-tac-toe_806131"> <!-- Replace with your favicon URL -->
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(45deg, #FF5722, #FFC107);
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cell:hover {
+    background: #e0e0e0;
+}
+
+#status {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+#restart {
+    padding: 10px 20px;
+    background: #FF5722;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#restart:hover {
+    background: #E64A19;
+}        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tic-Tac-Toe</h1>
+        <div id="game-board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div id="status"></div>
+        <button id="restart">Restart Game</button>
+    </div>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+const statusText = document.getElementById('status');
+const restartButton = document.getElementById('restart');
+
+let currentPlayer = 'X';
+let gameState = ['', '', '', '', '', '', '', '', ''];
+let gameActive = true;
+
+const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+];
+
+function handleCellClick(event) {
+    const clickedCell = event.target;
+    const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+    if (gameState[clickedCellIndex] !== '' || !gameActive) {
+        return;
+    }
+
+    gameState[clickedCellIndex] = currentPlayer;
+    clickedCell.textContent = currentPlayer;
+
+    checkResult();
+}
+
+function checkResult() {
+    let roundWon = false;
+
+    for (let i = 0; i < winningConditions.length; i++) {
+        const winCondition = winningConditions[i];
+        let a = gameState[winCondition[0]];
+        let b = gameState[winCondition[1]];
+        let c = gameState[winCondition[2]];
+
+        if (a === '' || b === '' || c === '') {
+            continue;
+        }
+
+        if (a === b && b === c) {
+            roundWon = true;
+            break;
+        }
+    }
+
+    if (roundWon) {
+        statusText.textContent = `Player ${currentPlayer} wins!`;
+        gameActive = false;
+        return;
+    }
+
+    if (!gameState.includes('')) {
+        statusText.textContent = `It's a draw!`;
+        gameActive = false;
+        return;
+    }
+
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    statusText.textContent = `Player ${currentPlayer}'s turn`;
+}
+
+function restartGame() {
+    currentPlayer = 'X';
+    gameState = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    statusText.textContent = `Player ${currentPlayer}'s turn`;
+    cells.forEach(cell => cell.textContent = '');
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+restartButton.addEventListener('click', restartGame);
+    </script>
+</body>
+</html>
